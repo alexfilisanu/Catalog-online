@@ -1,6 +1,3 @@
-from database.connection import connect_to_db
-
-
 def get_report_data(cursor, procedure_name, *params):
     cursor.execute(f'CALL {procedure_name}({", ".join(["%s" for _ in params])})', params)
     return cursor.fetchall()
