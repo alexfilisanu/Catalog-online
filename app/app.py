@@ -22,26 +22,28 @@
 # cursor.close()
 
 from flask import Flask, render_template, request
-import psycopg2
+from database.connection import connect_to_db
+from database.actions.reports import get_report_data, get_total_students
 
 app = Flask(__name__)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    conn = None
+    cursor = None
+
     try:
-        conn = psycopg2.connect("dbname=postgres user=postgres password=postgres host=localhost")
+        conn = connect_to_db()
         cursor = conn.cursor()
 
         if request.method == 'POST':
             subject = request.form['subject']
             grade = int(request.form['grade'])
 
-            # Example 1
             report_data = get_report_data(cursor, 'get_all_students_above_avg_in_subject', grade, subject, 0)
             total_students = get_total_students(cursor)
 
-            # Convert the result to a list of strings
             report_data_strings = [", ".join(map(str, row)) for row in report_data]
 
             return render_template('index.html', reports=report_data_strings, total_students=total_students)
@@ -49,18 +51,10 @@ def index():
         return render_template('index.html', reports=None, total_students=None)
 
     finally:
-        cursor.close()
-        conn.close()
-
-
-def get_report_data(cursor, procedure_name, *params):
-    cursor.execute(f'CALL {procedure_name}({", ".join(["%s" for _ in params])})', params)
-    return cursor.fetchall()
-
-
-def get_total_students(cursor):
-    cursor.execute('SELECT COUNT(*) FROM elevi')
-    return cursor.fetchone()[0]
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 
 if __name__ == '__main__':
