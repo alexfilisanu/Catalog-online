@@ -7,7 +7,15 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Welcome, {{ session['username'] }}!</h1>
+    <h1>Salut, {{ session['username'].split('@')[0] }}!</h1>
+
+    <form action="/get_grades" method="post">
+        <button type="submit">Toate notele</button>
+    </form>
+
+    <form action="/get_absences" method="post">
+        <button type="submit">Toate absentele</button>
+    </form>
 
     <br><br>
     <a href="/logout">Logout</a>
