@@ -5,7 +5,7 @@ cu credentialele user=postgres, password=postgres, host=localhost
 
 rulare manuala a scripturilor din folderul database/sql_scripts
 cd database/sql_scripts
-psql -U postgres -d catalog_online -a -f create_tables.sql
+psql -U postgres -d catalog_online -a -f create_database.sql
 psql -U postgres -d catalog_online -a -f populate_database.sql
 psql -U postgres -d catalog_online -a -f stored_procedures.sql
 
